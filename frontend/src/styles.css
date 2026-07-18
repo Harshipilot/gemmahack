@@ -2,8 +2,16 @@
   color-scheme: dark;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
-  background: #f4f0e8;
-  color: #2d2f31;
+  background: #f5f7ff;
+  color: #221d35;
+  --accent: #7c3aed;
+  --accent-2: #06b6d4;
+  --accent-3: #f59e0b;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-strong: #ffffff;
+  --border: rgba(123, 97, 255, 0.16);
+  --text: #221d35;
+  --muted: #6f6a85;
 }
 
 * {
@@ -12,7 +20,15 @@
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, #f7efe2 0%, #efe2ca 100%);
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #fef3c7 0%, transparent 26%),
+    linear-gradient(135deg, #f6f1ff 0%, #eef9ff 42%, #fff7ea 100%);
+  color: var(--text);
+}
+
+::selection {
+  background: rgba(7, 182, 212, 0.24);
+  color: #07111e;
 }
 
 button,
@@ -22,9 +38,9 @@ input {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 300px 1fr;
   min-height: 100vh;
-  background: #f4f0e8;
+  background: transparent;
 }
 
 .content-area {
@@ -32,12 +48,13 @@ input {
 }
 
 .sidebar {
-  background: linear-gradient(180deg, #15261d 0%, #203626 100%);
+  background: linear-gradient(180deg, #1f1347 0%, #3b2d9c 48%, #0ea5a2 100%);
   color: #fff;
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  box-shadow: 18px 0 45px rgba(31, 19, 71, 0.2);
 }
 
 .sidebar-brand {
@@ -50,11 +67,12 @@ input {
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: #f3e3c3;
-  color: #20331f;
+  background: linear-gradient(135deg, #fff4b8 0%, #ff9f43 100%);
+  color: #261e4a;
   display: grid;
   place-items: center;
   font-weight: 800;
+  box-shadow: 0 10px 24px rgba(255, 159, 67, 0.3);
 }
 
 .sidebar-title {
@@ -77,15 +95,17 @@ input {
   display: block;
   padding: 14px 18px;
   border-radius: 18px;
-  color: #b9c4ae;
+  color: #e6e7ff;
   text-decoration: none;
   font-weight: 600;
+  transition: all 180ms ease;
 }
 
 .sidebar-link.active,
 .sidebar-link:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.12) 100%);
   color: #fff;
+  transform: translateX(2px);
 }
 
 .page-panel {
@@ -94,11 +114,12 @@ input {
 }
 
 .panel {
-  background: linear-gradient(145deg, #fffef8 0%, #fcf6ea 100%);
-  border: 1px solid rgba(16, 22, 12, 0.08);
+  background: linear-gradient(145deg, rgba(255,255,255,0.96) 0%, rgba(247,244,255,0.96) 100%);
+  border: 1px solid var(--border);
   border-radius: 24px;
-  box-shadow: 0 18px 38px rgba(40, 52, 39, 0.08);
+  box-shadow: 0 20px 45px rgba(46, 37, 92, 0.12);
   padding: 24px;
+  backdrop-filter: blur(10px);
 }
 
 .section-description {
@@ -175,11 +196,18 @@ input {
 }
 
 .card {
-  background: #fffef8;
-  border: 1px solid rgba(16, 22, 12, 0.08);
+  background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(247,244,255,0.95) 100%);
+  border: 1px solid var(--border);
   border-radius: 24px;
-  box-shadow: 0 12px 30px rgba(50, 50, 63, 0.06);
+  box-shadow: 0 16px 36px rgba(52, 44, 88, 0.09);
   padding: 24px;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.panel:hover,
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 42px rgba(52, 44, 88, 0.16);
 }
 
 .kpi-banner {
@@ -257,6 +285,11 @@ input {
 
 .dashboard-table tbody tr {
   border-top: 1px solid rgba(16, 22, 12, 0.08);
+  transition: background 180ms ease;
+}
+
+.dashboard-table tbody tr:hover {
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.06) 0%, rgba(6, 182, 212, 0.06) 100%);
 }
 
 .progress-label {
@@ -290,26 +323,32 @@ input {
   min-height: 220px;
   padding: 18px;
   border-radius: 20px;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.expiry-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(39, 31, 89, 0.12);
 }
 
 .expiry-card--3 {
-  background: #fff2f0;
-  border: 1px solid #f3aea4;
+  background: linear-gradient(135deg, #fff2f0 0%, #ffe4dd 100%);
+  border: 1px solid #f6a096;
 }
 
 .expiry-card--7 {
-  background: #fff7eb;
-  border: 1px solid #f4c677;
+  background: linear-gradient(135deg, #fff8eb 0%, #ffe8ba 100%);
+  border: 1px solid #f6c878;
 }
 
 .expiry-card--14 {
-  background: #fff9ed;
-  border: 1px solid #ffd77e;
+  background: linear-gradient(135deg, #fef7e8 0%, #ffe7a1 100%);
+  border: 1px solid #f8d16d;
 }
 
 .expiry-card--30 {
-  background: #eef4fe;
-  border: 1px solid #84b5f1;
+  background: linear-gradient(135deg, #eef5ff 0%, #dbeafe 100%);
+  border: 1px solid #96c5ff;
 }
 
 .expiry-title {
@@ -398,8 +437,11 @@ input {
 }
 
 .analytics-card-row {
-  padding: 12px 0;
-  border-top: 1px solid rgba(16, 22, 12, 0.08);
+  padding: 13px 14px;
+  margin-top: 10px;
+  border: 1px solid rgba(123, 97, 255, 0.12);
+  border-radius: 16px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.85) 0%, rgba(247,244,255,0.9) 100%);
 }
 
 .analytics-card-top {
@@ -477,10 +519,11 @@ input {
 }
 
 .popularity-card {
-  background: linear-gradient(145deg, #f7f1e2 0%, #fdf8ee 100%);
-  border: 1px solid rgba(16, 22, 12, 0.06);
+  background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(243,238,255,0.95) 100%);
+  border: 1px solid rgba(123, 97, 255, 0.12);
   border-radius: 18px;
   padding: 16px;
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.08);
 }
 
 .popularity-card h4 {
@@ -489,10 +532,10 @@ input {
 }
 
 .line-chart-card {
-  background: #fffdf8;
+  background: linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(240,248,255,0.95) 100%);
   border-radius: 16px;
   padding: 12px;
-  border: 1px solid rgba(16, 22, 12, 0.06);
+  border: 1px solid rgba(123, 97, 255, 0.12);
 }
 
 .line-chart-title {
@@ -584,9 +627,9 @@ input {
   display: grid;
   gap: 6px;
   padding: 12px;
-  background: #ffffff;
+  background: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(247,244,255,0.95) 100%);
   border-radius: 16px;
-  border: 1px solid rgba(16, 22, 12, 0.06);
+  border: 1px solid rgba(123, 97, 255, 0.12);
 }
 
 .expiry-item-name {
@@ -604,11 +647,12 @@ input {
 }
 
 .button--show-items {
-  background: #20331f;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
   color: #fff;
   width: 100%;
   padding: 12px 16px;
   margin-top: 14px;
+  box-shadow: 0 12px 24px rgba(6, 182, 212, 0.22);
 }
 
 .expiry-meta {
@@ -627,15 +671,17 @@ input {
 }
 
 .button--action {
-  background: #1a7023;
+  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
   color: #ffffff;
   padding: 10px 16px;
+  box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
 }
 
 .button--send {
-  background: #20331f;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
   color: #fff;
   padding: 12px 16px;
+  box-shadow: 0 10px 20px rgba(7, 182, 212, 0.2);
 }
 
 .sidebar-column {
@@ -682,16 +728,17 @@ input {
   max-width: 100%;
   padding: 14px 16px;
   border-radius: 18px;
-  background: #f8f7f2;
+  background: linear-gradient(135deg, #f7f3ff 0%, #edf7ff 100%);
   color: #1c1c1c;
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.08);
 }
 
 .chat-message-bubble.assistant {
-  background: #eef4ee;
+  background: linear-gradient(135deg, #eefbf8 0%, #eaf5ff 100%);
 }
 
 .chat-message-bubble.user {
-  background: #20331f;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
   color: #fff;
 }
 

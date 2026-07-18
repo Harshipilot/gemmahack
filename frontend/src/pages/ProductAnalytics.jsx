@@ -122,7 +122,7 @@ export default function ProductAnalytics() {
     <div className="page-panel">
       <div className="panel card">
         <h2>Product Analytics</h2>
-        <p className="section-description">Live analytics from supermarket.db showing fast moving and slow moving products plus popularity trends.</p>
+        <p className="section-description">Live analytics  showing fast moving and slow moving products plus popularity trends.</p>
       </div>
 
       <div className="grid-two-columns">

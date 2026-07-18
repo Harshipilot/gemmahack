@@ -21,7 +21,7 @@ export default function Dashboard() {
     <div className="page-panel">
       <div className="panel card">
         <h1>Dashboard</h1>
-        <p className="section-description">Live supermarket analytics from the SQLite database.</p>
+        <p className="section-description">Live supermarket analytics from the shop.</p>
       </div>
 
       {summary && <KPIBanner summary={summary} />}
