@@ -126,7 +126,11 @@ def refresh_from_csv():
         updated = 0
         cur = conn.cursor()
         for raw_row in rows:
-            values = [_clean_value(col, raw_row.get(col)) for col, _ in COLUMNS]
+            row_data = {}
+            for col, _ in COLUMNS:
+                row_data[col] = _clean_value(col, raw_row.get(col))
+            row_data["is_fast_moving"], row_data["is_slow_moving"] = _derive_movement_flags(row_data)
+            values = [row_data.get(col) for col, _ in COLUMNS]
             product_id = values[0]
             existing = conn.execute("SELECT 1 FROM supermarket WHERE product_id = ?", (product_id,)).fetchone()
             cur.execute(upsert_sql, values)
@@ -155,6 +159,22 @@ def _format_date(value):
     return value
 
 
+def _derive_movement_flags(product):
+    current_stock = product.get("current_stock") or 0
+    reorder_level = product.get("reorder_level") or 0
+    maximum_stock = product.get("maximum_stock") or 0
+
+    is_fast = 1 if reorder_level and current_stock <= reorder_level * 0.9 else 0
+    is_slow = 0
+    if maximum_stock:
+        slow_threshold = max(reorder_level * 2, int(maximum_stock * 0.6))
+        if current_stock >= slow_threshold:
+            is_slow = 1
+    if is_fast and is_slow:
+        is_slow = 0
+    return is_fast, is_slow
+
+
 def _randomize_product(product):
     current_stock = product.get("current_stock") or 0
     cost_price = product.get("cost_price") or 0.0
@@ -162,9 +182,11 @@ def _randomize_product(product):
     reorder_level = product.get("reorder_level") or 0
     today_sales = product.get("today_sales") or 0
 
-    stock_delta = random.randint(-5, 10)
-    sales_delta = random.randint(0, 6)
-    price_delta = round(random.uniform(-0.2, 0.4), 2)
+    stock_delta = random.randint(-12, 18)
+    if random.random() < 0.25:
+        stock_delta += random.choice([-20, 20])
+    sales_delta = random.randint(0, 12)
+    price_delta = round(random.uniform(-0.3, 0.6), 2)
 
     new_stock = max(0, current_stock + stock_delta)
     new_today_sales = max(0, today_sales + sales_delta)
@@ -172,11 +194,15 @@ def _randomize_product(product):
     new_today_revenue = round(new_today_sales * new_price, 2)
     new_today_profit = round(new_today_sales * max(0.0, new_price - cost_price), 2)
     new_profit_margin = round((new_today_profit / new_today_revenue * 100), 2) if new_today_revenue else 0.0
-    new_sales_velocity = round(max(0.0, (product.get("sales_velocity") or 0) + random.uniform(-0.3, 0.3)), 2)
+    new_sales_velocity = round(max(0.0, (product.get("sales_velocity") or 0) + random.uniform(-0.5, 0.8)), 2)
     new_sales_velocity = min(max(new_sales_velocity, 0.0), 10.0)
 
-    is_fast = 1 if reorder_level and new_stock < reorder_level * 1.5 else 0
-    is_slow = 1 if reorder_level and new_stock > reorder_level * 2 else 0
+    derived_fast, derived_slow = _derive_movement_flags({
+        **product,
+        "current_stock": new_stock,
+        "reorder_level": reorder_level,
+        "maximum_stock": product.get("maximum_stock") or 0,
+    })
 
     expiry_date = _parse_date(product.get("expiry_date"))
     if expiry_date and random.random() < 0.25:
@@ -190,8 +216,8 @@ def _randomize_product(product):
         "today_profit": new_today_profit,
         "profit_margin": new_profit_margin,
         "sales_velocity": new_sales_velocity,
-        "is_fast_moving": is_fast,
-        "is_slow_moving": is_slow,
+        "is_fast_moving": derived_fast,
+        "is_slow_moving": derived_slow,
         "expiry_date": _format_date(expiry_date),
     }
 
@@ -199,10 +225,16 @@ def _randomize_product(product):
 def random_update(update_count=8):
     conn = create_connection()
     try:
-        ids = [row[0] for row in conn.execute("SELECT product_id FROM supermarket").fetchall()]
+        ids = [row[0] for row in conn.execute("SELECT product_id FROM supermarket ORDER BY product_id").fetchall()]
         if not ids:
             return 0
-        selected = random.sample(ids, min(update_count, len(ids)))
+        selected = ids[: min(4, len(ids))]
+        remaining_ids = [product_id for product_id in ids if product_id not in selected]
+        if len(selected) < update_count and remaining_ids:
+            selected.extend(random.sample(remaining_ids, min(update_count - len(selected), len(remaining_ids))))
+        if len(selected) > update_count:
+            selected = random.sample(selected, update_count)
+
         for product_id in selected:
             row = conn.execute("SELECT * FROM supermarket WHERE product_id = ?", (product_id,)).fetchone()
             if not row:
@@ -221,6 +253,8 @@ def random_update(update_count=8):
 
 def main():
     refresh_from_csv()
+    updated_count = random_update(20)
+    print(f"Seeded live movement updates for {updated_count} products")
 
 
 # =====================================================================
@@ -386,7 +420,7 @@ def dashboard_summary(conn=None):
 
 
 def fast_moving_products(limit=5, conn=None):
-    """TOP N critically-low-stock products to reorder immediately."""
+    """TOP N products that are running low against their reorder threshold."""
     own_conn = conn is None
     conn = conn or create_connection()
     conn.row_factory = sqlite3.Row
@@ -394,10 +428,10 @@ def fast_moving_products(limit=5, conn=None):
         """
         SELECT product_id, product_name, category, current_stock, reorder_level,
                recommended_reorder_qty,
-               ROUND(current_stock * 100.0 / NULLIF(reorder_level, 0), 1) AS pct_of_required_stock
+               ROUND(100.0 * CASE WHEN NULLIF(current_stock, 0) / NULLIF(reorder_level, 0) > 1.0 THEN 1.0 ELSE NULLIF(current_stock, 0) / NULLIF(reorder_level, 0) END, 1) AS pct_of_required_stock
         FROM supermarket
-        WHERE is_fast_moving = 1
-        ORDER BY pct_of_required_stock ASC
+        WHERE is_fast_moving = 1 AND reorder_level > 0
+        ORDER BY pct_of_required_stock DESC
         LIMIT ?
         """,
         (limit,),
@@ -415,10 +449,10 @@ def slow_moving_products(limit=5, conn=None):
     conn.row_factory = sqlite3.Row
     cur = conn.execute(
         """
-        SELECT product_id, product_name, category, current_stock, reorder_level,
-               ROUND(current_stock * 100.0 / NULLIF(reorder_level, 0), 1) AS pct_of_needed_stock
+        SELECT product_id, product_name, category, current_stock, maximum_stock, reorder_level,
+               ROUND(100.0 * CASE WHEN NULLIF(current_stock, 0) / NULLIF(maximum_stock, 0) > 1.0 THEN 1.0 ELSE NULLIF(current_stock, 0) / NULLIF(maximum_stock, 0) END, 1) AS pct_of_needed_stock
         FROM supermarket
-        WHERE is_slow_moving = 1
+        WHERE is_slow_moving = 1 AND maximum_stock > 0
         ORDER BY pct_of_needed_stock DESC
         LIMIT ?
         """,

@@ -12,7 +12,7 @@
 
 body {
   margin: 0;
-  background: #efe8dc;
+  background: linear-gradient(135deg, #f7efe2 0%, #efe2ca 100%);
 }
 
 button,
@@ -32,7 +32,7 @@ input {
 }
 
 .sidebar {
-  background: #192921;
+  background: linear-gradient(180deg, #15261d 0%, #203626 100%);
   color: #fff;
   padding: 24px;
   display: flex;
@@ -94,10 +94,10 @@ input {
 }
 
 .panel {
-  background: #fffef8;
+  background: linear-gradient(145deg, #fffef8 0%, #fcf6ea 100%);
   border: 1px solid rgba(16, 22, 12, 0.08);
   border-radius: 24px;
-  box-shadow: 0 12px 30px rgba(50, 50, 63, 0.06);
+  box-shadow: 0 18px 38px rgba(40, 52, 39, 0.08);
   padding: 24px;
 }
 
@@ -395,6 +395,176 @@ input {
   align-items: center;
   margin-bottom: 18px;
   gap: 12px;
+}
+
+.analytics-card-row {
+  padding: 12px 0;
+  border-top: 1px solid rgba(16, 22, 12, 0.08);
+}
+
+.analytics-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.analytics-card-title {
+  font-weight: 700;
+  color: #20331f;
+}
+
+.analytics-number {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #20331f;
+}
+
+.analytics-footnote {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #6f745f;
+}
+
+.analytics-summary-pill {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #eef8ef;
+  color: #236b32;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.analytics-summary-pill--warn {
+  background: #fff7e8;
+  color: #9a5f00;
+}
+
+.analytics-bar-track {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: #ece9de;
+  overflow: hidden;
+}
+
+.analytics-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.analytics-bar-fill--green {
+  background: linear-gradient(90deg, #3dbd6d, #1f8f4e);
+}
+
+.analytics-bar-fill--warn {
+  background: linear-gradient(90deg, #f0b24a, #d98817);
+}
+
+.analytics-bar-fill--blue {
+  background: linear-gradient(90deg, #4aa9ff, #2466c6);
+}
+
+.popularity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.popularity-card {
+  background: linear-gradient(145deg, #f7f1e2 0%, #fdf8ee 100%);
+  border: 1px solid rgba(16, 22, 12, 0.06);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.popularity-card h4 {
+  margin: 0 0 12px;
+  color: #20331f;
+}
+
+.line-chart-card {
+  background: #fffdf8;
+  border-radius: 16px;
+  padding: 12px;
+  border: 1px solid rgba(16, 22, 12, 0.06);
+}
+
+.line-chart-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5f6553;
+  margin-bottom: 6px;
+}
+
+.line-chart-axis-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #8a8f79;
+  margin-bottom: 4px;
+}
+
+.line-chart-svg {
+  width: 100%;
+  height: auto;
+}
+
+.line-chart-axis {
+  stroke: #d1d4c6;
+  stroke-width: 1;
+}
+
+.line-chart-path {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.line-chart-path--blue {
+  stroke: #3b82f6;
+}
+
+.line-chart-path--green {
+  stroke: #22c55e;
+}
+
+.line-chart-dot {
+  stroke: #fff;
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+.line-chart-dot--blue {
+  fill: #3b82f6;
+}
+
+.line-chart-dot--green {
+  fill: #22c55e;
+}
+
+.line-chart-tooltip {
+  fill: #20331f;
+}
+
+.line-chart-tooltip-text {
+  fill: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.line-chart-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: #6f745f;
 }
 
 .empty-state {

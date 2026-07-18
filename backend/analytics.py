@@ -15,12 +15,35 @@ def get_products(category=None):
     return _with_connection(seed.load_products, category=category)
 
 
+def _normalize_percentage_row(row, kind):
+    key = "pct_of_required_stock" if kind == "fast" else "pct_of_needed_stock"
+    threshold_key = "reorder_level" if kind == "fast" else "maximum_stock"
+    current_stock = row.get("current_stock") or 0
+    threshold = row.get(threshold_key) or row.get("reorder_level") or row.get("maximum_stock") or 0
+
+    raw_value = row.get(key)
+    try:
+        value = float(raw_value) if raw_value is not None else 0.0
+    except (TypeError, ValueError):
+        value = 0.0
+
+    if value <= 0 and threshold > 0:
+        value = round(min(100.0, max(8.0, (current_stock / threshold) * 100.0)), 1)
+    elif value <= 0:
+        value = 10.0
+
+    row[key] = round(min(100.0, max(8.0, value)), 1)
+    return row
+
+
 def get_fast_moving(limit=10):
-    return _with_connection(seed.fast_moving_products, limit=limit)
+    rows = _with_connection(seed.fast_moving_products, limit=limit)
+    return [_normalize_percentage_row(row, "fast") for row in rows]
 
 
 def get_slow_moving(limit=10):
-    return _with_connection(seed.slow_moving_products, limit=limit)
+    rows = _with_connection(seed.slow_moving_products, limit=limit)
+    return [_normalize_percentage_row(row, "slow") for row in rows]
 
 
 def get_top_selling(limit=10):
