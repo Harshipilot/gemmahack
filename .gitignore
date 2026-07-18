@@ -2,8 +2,6 @@
 node_modules/
 
 # Environment variables
-.env
-.env.*
 
 # Logs
 logs/
@@ -21,7 +19,6 @@ build/
 Thumbs.db
 
 # IDE
-.vscode/
 .idea/
 
 # Python (if you have backend)
@@ -32,3 +29,7 @@ venv/
 
 # Database (if you don't want to track it)
 *.db
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+config.bat
