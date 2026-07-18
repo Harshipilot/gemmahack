@@ -426,8 +426,8 @@ def fast_moving_products(limit=5, conn=None):
     conn.row_factory = sqlite3.Row
     cur = conn.execute(
         """
-        SELECT product_id, product_name, category, current_stock, reorder_level,
-               recommended_reorder_qty,
+        SELECT product_id, product_name, category, current_stock, reorder_level, maximum_stock,
+               MAX(0, maximum_stock - current_stock) AS recommended_reorder_qty,
                ROUND(100.0 * CASE WHEN NULLIF(current_stock, 0) / NULLIF(reorder_level, 0) > 1.0 THEN 1.0 ELSE NULLIF(current_stock, 0) / NULLIF(reorder_level, 0) END, 1) AS pct_of_required_stock
         FROM supermarket
         WHERE is_fast_moving = 1 AND reorder_level > 0
@@ -450,6 +450,7 @@ def slow_moving_products(limit=5, conn=None):
     cur = conn.execute(
         """
         SELECT product_id, product_name, category, current_stock, maximum_stock, reorder_level,
+               MAX(0, current_stock - reorder_level) AS surplus_qty,
                ROUND(100.0 * CASE WHEN NULLIF(current_stock, 0) / NULLIF(maximum_stock, 0) > 1.0 THEN 1.0 ELSE NULLIF(current_stock, 0) / NULLIF(maximum_stock, 0) END, 1) AS pct_of_needed_stock
         FROM supermarket
         WHERE is_slow_moving = 1 AND maximum_stock > 0

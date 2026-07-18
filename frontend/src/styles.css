@@ -772,3 +772,225 @@ input {
   padding: 40px;
   text-align: center;
 }
+
+.chatbot-page {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.chatbot-panel-modern {
+  width: min(100%, 980px);
+  display: grid;
+  gap: 24px;
+  padding: 28px;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(31, 46, 24, 0.08);
+}
+
+.chatbot-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.chatbot-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #142b21;
+}
+
+.chatbot-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #eef8f3;
+  color: #1f5a3b;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.chatbot-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chatbot-chip {
+  border: 1px solid rgba(17, 87, 65, 0.16);
+  background: #f6fcf8;
+  color: #13412f;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.chatbot-chip:hover,
+.chatbot-chip:focus {
+  background: #e7f6ec;
+  transform: translateY(-1px);
+}
+
+.chatbot-content-modern {
+  display: grid;
+  gap: 16px;
+  max-height: 620px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chat-message {
+  display: flex;
+  animation: fadeIn 220ms ease;
+}
+
+.chat-message.assistant {
+  justify-content: flex-start;
+}
+
+.chat-message.user {
+  justify-content: flex-end;
+}
+
+.chat-message-bubble {
+  max-width: 100%;
+  padding: 18px 20px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #f7f3ff 0%, #edf7ff 100%);
+  color: #17201a;
+  box-shadow: 0 16px 30px rgba(54, 65, 48, 0.08);
+}
+
+.chat-message-bubble.assistant {
+  background: linear-gradient(135deg, #eefbf8 0%, #eaf5ff 100%);
+}
+
+.chat-message-bubble.user {
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #fff;
+}
+
+.chat-message-text {
+  font-size: 0.975rem;
+  line-height: 1.65;
+}
+
+.chat-message-meta {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: rgba(29, 36, 26, 0.65);
+}
+
+.chatbot-input-form-modern {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.chatbot-input-modern {
+  width: 100%;
+  min-height: 54px;
+  padding: 16px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 22, 12, 0.14);
+  background: #fbfdfb;
+  font-size: 1rem;
+  color: #15220f;
+}
+
+.chatbot-input-modern:focus {
+  outline: none;
+  border-color: rgba(16, 22, 12, 0.3);
+  box-shadow: 0 0 0 4px rgba(211, 238, 217, 0.35);
+}
+
+.chatbot-error {
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: #fff1f0;
+  color: #762a31;
+  border: 1px solid #f5c2c7;
+}
+
+.chat-result-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.chat-result-card {
+  border-radius: 20px;
+  padding: 16px;
+  background: #f6fbf7;
+  border: 1px solid rgba(23, 62, 35, 0.08);
+  box-shadow: 0 12px 24px rgba(29, 47, 30, 0.05);
+}
+
+.chat-result-title {
+  font-weight: 700;
+  color: #1d4626;
+  margin-bottom: 8px;
+}
+
+.chat-result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.92rem;
+  color: #3b533d;
+  margin-bottom: 6px;
+}
+
+.chat-result-expiry {
+  color: #7a5030;
+  font-size: 0.9rem;
+}
+
+.typing-indicator {
+  color: #2d4835;
+  font-weight: 600;
+}
+
+.typing-dots {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.typing-dots i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 3px;
+  background: #2d4835;
+  border-radius: 50%;
+  opacity: 0.2;
+  transform: translateY(0);
+  animation: typing-dot 1s infinite ease-in-out;
+}
+.typing-dots i:nth-child(1) { animation-delay: 0s; }
+.typing-dots i:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typing-dot {
+  0% { opacity: 0.2; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-6px); }
+  100% { opacity: 0.2; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

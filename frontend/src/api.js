@@ -42,6 +42,9 @@ export async function getExpiring() {
   return request('/expiring')
 }
 
-export async function queryChatbot(query) {
-  return request(`/chat/context?q=${encodeURIComponent(query)}`)
+export async function queryChatbot(message) {
+  return request('/chat', {
+    method: 'POST',
+    body: JSON.stringify({ message }),
+  })
 }
